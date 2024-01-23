@@ -4,29 +4,29 @@ import Status from './components/Status.tsx'
 import { loadState, saveState } from "../public/chromeStorage.ts"
 
 function App() {
-  const [isOn, setIsOn] = useState(false)
+  const [isEnabled, setIsEnabled] = useState(false)
 
   useEffect(() => {
-    loadState('extensionActive', (value: boolean) => {
+    loadState('isEnabled', (value: boolean) => {
       if (value !== undefined) {
-        setIsOn(value);
+        setIsEnabled(value);
       }
     });
   }, []);
 
   useEffect(() => {
-    saveState('extensionActive', isOn);
-  }, [isOn]);
+    saveState('isEnabled', isEnabled);
+  }, [isEnabled]);
 
   return (
     <>
       <div className='flex items-center justify-center my-10'>
-        <button className='outline-0  bg-transparent' onClick={() => setIsOn(!isOn)}>
+        <button className='outline-0  bg-transparent' onClick={() => setIsEnabled(!isEnabled)}>
           <img src="./stop.png" width={200} height={200} alt="" className=' hover:scale-110 duration-300' />
         </button>
       </div>
 
-      <Status isOn={isOn} />
+      <Status isOn={isEnabled} />
 
       <div className='flex justify-center items-center gap-x-10'>
         <h1 className='font-bold text-4xl'>

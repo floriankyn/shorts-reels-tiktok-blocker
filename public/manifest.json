@@ -7,13 +7,26 @@
   },
   "permissions": [
     "scripting",
-    "storage"
+    "storage",
+    "activeTab",
+    "webNavigation"
   ],
   "host_permissions": [
     "http://*/*",
     "https://*/*"
   ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "icons": {
     "32": "icon32.png"
-  }
+  },
+  "content_scripts": [
+    {
+        "matches": [
+          "*://www.youtube.com/shorts/*"
+        ],
+        "js": ["./blankShorts.js"]
+    }
+]
 }

@@ -1,7 +1,7 @@
 import './App.css'
 import { useState, useEffect } from 'react'
 import Status from './components/Status.tsx'
-import { loadState, saveState } from "../public/javascript/chromeStorage.ts"
+import { loadState, saveState } from "../public/chromeStorage.ts"
 
 function App() {
   const [isOn, setIsOn] = useState(false)

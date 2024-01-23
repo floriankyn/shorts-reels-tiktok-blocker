@@ -1,10 +1,22 @@
 import './App.css'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Status from './components/Status.tsx'
+import { loadState, saveState } from "../public/javascript/chromeStorage.ts"
 
 function App() {
   const [isOn, setIsOn] = useState(false)
 
+  useEffect(() => {
+    loadState('extensionActive', (value: boolean) => {
+      if (value !== undefined) {
+        setIsOn(value);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    saveState('extensionActive', isOn);
+  }, [isOn]);
 
   return (
     <>

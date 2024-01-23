@@ -1,5 +1,7 @@
 # React + TypeScript + Vite
 
+# Next on the list, to display how much time i tried to go on shorts
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

@@ -20,13 +20,5 @@
   },
   "icons": {
     "32": "icon32.png"
-  },
-  "content_scripts": [
-    {
-        "matches": [
-          "*://www.youtube.com/shorts/*"
-        ],
-        "js": ["./blankShorts.js"]
-    }
-]
+  }
 }

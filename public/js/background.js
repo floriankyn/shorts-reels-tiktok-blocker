@@ -7,12 +7,13 @@ chrome.storage.local.get(['isEnabled'], function(result) {
 });
 
 chrome.storage.onChanged.addListener(function(changes, namespace) {
-    if (changes.isEnabled) {
+    console.log("on change", changes);
+    if (changes.isEnabled) {    
         isExtensionEnabled = changes.isEnabled.newValue;
     }
 });
 
-chrome.webNavigation.onHistoryStateUpdated.addListener(async function (details) {
+chrome.tabs.onUpdated.addListener(async function  (tabId, changeInfo, tab) {
   const bannedUrls = [
     'youtube.com/shorts/',
     'instagram.com/reels/',
@@ -21,22 +22,29 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(async function (details) 
     "tiktok.com/en/",
   ];
 
-  let isAllowerd = await chrome.storage.local.get("isEnabled");
+  let isAllowed = await chrome.storage.local.get("isEnabled");
 
-  console.log(isAllowerd.isEnabled);
-
-  if(isAllowerd.isEnabled) {
-    if (bannedUrls.some(url => details.url.includes(url))) {
+  if(isAllowed.isEnabled) {
+    if (bannedUrls.some(url => tab.url.includes(url))) {
       chrome.scripting.executeScript({
-          target: { tabId: details.tabId },
+          target: { tabId: tabId },
           function: blankOutPage
       });
-    } 
+    }
 
-    if(details.url === "https://www.youtube.com/") {
+    const youtubeUrls = [
+      "https://www.youtube.com/",
+      "https://www.youtube.com",
+      "www.youtube.com/",
+      "www.youtube.com",
+    ]
+
+    console.log("details", tab.url);
+    console.log(youtubeUrls.some(url => tab.url.includes(url)));
+    if(youtubeUrls.some(url => tab.url.includes(url))) {
       chrome.scripting.executeScript({
-          target: { tabId: details.tabId },
-          function: removeReelsFromMainPage
+        target: { tabId: tabId },
+        func: removeReelsFromMainPage
       });
     }
   }
@@ -48,7 +56,27 @@ function blankOutPage() {
 }
 
 function removeReelsFromMainPage() {
-  document.querySelector("#contents > ytd-rich-section-renderer:nth-child(3)").innerHTML = '';
-  document.querySelector("#contents > ytd-rich-section-renderer:nth-child(5)").innerHTML = '';
-  document.querySelector("#items > ytd-guide-entry-renderer:nth-child(2)").innerHTML = '';
+  const removeReels = () => {
+      const section1 = document.querySelector("#contents > ytd-rich-section-renderer:nth-child(3)");
+      const section2 = document.querySelector("#contents > ytd-rich-section-renderer:nth-child(5)");
+      const section3 = document.querySelector("#items > ytd-guide-entry-renderer:nth-child(2)");
+
+      if (section1) section1.innerHTML = '';
+      if (section2) section2.innerHTML = '';
+      if (section3) section3.innerHTML = '';
+  };
+
+  removeReels();
+
+  const observer = new MutationObserver(mutations => {
+      mutations.forEach(mutation => {
+          if (mutation.type === 'childList') {
+              removeReels();
+          }
+      });
+  });
+
+  const config = { childList: true, subtree: true };
+  observer.observe(document.body, config);
 }
+

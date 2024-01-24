@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <img src="https://raw.githubusercontent.com/floriankyn/shorts-reels-tiktok-blocker/main/public/stop.png" alt="MindToy" width="200">
+  <img src="https://raw.githubusercontent.com/floriankyn/shorts-reels-tiktok-blocker/main/public/img/stop.png" alt="" width="200">
   <br>
     Shorts, Reels & TikTok Chrome Blocker
   <br>

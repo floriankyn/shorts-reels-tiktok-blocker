@@ -2,6 +2,7 @@
 let isExtensionEnabled = false;
 
 chrome.storage.local.get(['isEnabled'], function(result) {
+    console.log(result.isEnabled);
     isExtensionEnabled = result.isEnabled ?? false;
 });
 
@@ -21,6 +22,8 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(async function (details) 
   ];
 
   let isAllowerd = await chrome.storage.local.get("isEnabled");
+
+  console.log(isAllowerd.isEnabled);
 
   if(isAllowerd.isEnabled) {
     if (bannedUrls.some(url => details.url.includes(url))) {

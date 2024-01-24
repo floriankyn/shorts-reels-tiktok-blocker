@@ -22,31 +22,39 @@ chrome.tabs.onUpdated.addListener(async function  (tabId, changeInfo, tab) {
     "tiktok.com/en/",
   ];
 
-  let isAllowed = await chrome.storage.local.get("isEnabled");
+  console.log(tab.url);
 
-  if(isAllowed.isEnabled) {
-    if (bannedUrls.some(url => tab.url.includes(url))) {
-      chrome.scripting.executeScript({
+  if(typeof tab.url === 'undefined') return;
+
+  try {
+    const isAllowed = await chrome.storage.local.get("isEnabled");
+
+    if(isAllowed.isEnabled) {
+      if (bannedUrls.some(url => tab.url.includes(url))) {
+        chrome.scripting.executeScript({
+            target: { tabId: tabId },
+            function: blankOutPage
+        });
+      }
+
+      const youtubeUrls = [
+        "https://www.youtube.com/",
+        "https://www.youtube.com",
+        "www.youtube.com/",
+        "www.youtube.com",
+      ]
+
+      console.log("details", tab.url);
+      console.log(youtubeUrls.some(url => tab.url.includes(url)));
+      if(youtubeUrls.some(url => tab.url.includes(url))) {
+        chrome.scripting.executeScript({
           target: { tabId: tabId },
-          function: blankOutPage
-      });
+          func: removeReelsFromMainPage
+        });
+      }
     }
-
-    const youtubeUrls = [
-      "https://www.youtube.com/",
-      "https://www.youtube.com",
-      "www.youtube.com/",
-      "www.youtube.com",
-    ]
-
-    console.log("details", tab.url);
-    console.log(youtubeUrls.some(url => tab.url.includes(url)));
-    if(youtubeUrls.some(url => tab.url.includes(url))) {
-      chrome.scripting.executeScript({
-        target: { tabId: tabId },
-        func: removeReelsFromMainPage
-      });
-    }
+  } catch(e) {
+    console.log(e);
   }
 });
 

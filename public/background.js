@@ -28,13 +28,24 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(async function (details) 
           target: { tabId: details.tabId },
           function: blankOutPage
       });
-  } 
+    } 
+
+    if(details.url === "https://www.youtube.com/") {
+      chrome.scripting.executeScript({
+          target: { tabId: details.tabId },
+          function: removeReelsFromMainPage
+      });
+    }
   }
-
-
 });
 
 function blankOutPage() {
   document.body.innerHTML = '';
   document.body.style.backgroundColor = 'white';
+}
+
+function removeReelsFromMainPage() {
+  document.querySelector("#contents > ytd-rich-section-renderer:nth-child(3)").innerHTML = '';
+  document.querySelector("#contents > ytd-rich-section-renderer:nth-child(5)").innerHTML = '';
+  document.querySelector("#items > ytd-guide-entry-renderer:nth-child(2)").innerHTML = '';
 }
